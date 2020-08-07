@@ -1,0 +1,33 @@
+{
+  "name": "process-infos",
+  "version": "1.0.0",
+  "description": "process-infos est un module NPM permettant de récupérer toutes les informations relatives à vos modules NPM et à votre process. Compatible avec Discord.js !",
+  "main": "process-infos.js",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "moment": "^2.27.0",
+    "os": "^0.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nyfos/process-infos.git"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "info",
+    "infos",
+    "bot",
+    "client",
+    "nyfos"
+  ],
+  "author": "Nyfos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nyfos/process-infos/issues"
+  },
+  "homepage": "https://github.com/Nyfos/process-infos#readme"
+}
