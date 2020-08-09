@@ -8,37 +8,76 @@ const DiscordVersion = Discord.version.split(".")[0]
 if (!DiscordVersion) console.warn("Some commands may not work properly if you don't install the 'discord.js' package! To correct this problem, install this package.")
 if (DiscordVersion != undefined && DiscordVersion < 11) throw new RangeError("You must install discord.js 11.5.1 or higher!")
 if (DiscordVersion != undefined && DiscordVersion > 12) throw new RangeError("You must install discord.js 11.5.1 or higher!")
-if (DiscordVersion != undefined) console.log(`Running discord-bot-info with version ${DiscordVersion} of discord.js!`);
+if (DiscordVersion != undefined) console.log(`Running process-infos with version ${DiscordVersion} of discord.js!`);
 
-function testOs () {
+var testOs = function () {
     if (!os) console.warn("This command might work badly if you don't install the 'os' package! To correct this problem, install this package.");
 }
 
-function testDiscord () {
+var testDiscord = function () {
     if (!DiscordVersion) console.warn("This command might work badly if you don't install the 'discord.js' package! To correct this problem, install this package.")
 }
 
-function platform () {
+const chalk = require('chalk')
+var bilan = function () {
+    if (!chalk) {
+        console.log(nodeVersion())
+        console.log(platform())
+        console.log(release())
+        console.log(memoryUsage())
+        console.log(uptimeFormated())
+        console.log(version())
+        console.log(cpu(0))
+        console.log("La génération du bilan a été épurée car vous ne possédez pas le package 'chalk'!")
+    }
+    console.log(chalk.hex("#1387de").bold("Bilan process-infos"))
+    console.log("-----------------------")
+    var color = function (value=0, text="") {
+        if (value > 70) return chalk.red(text)
+        if (value > 30 && value <= 70) return chalk.yellow(text)
+        if (value <= 30) return chalk.green(text)
+        return chalk.magenta(text)
+    }
+    var color2 = function (value, text) {
+        if (value > 2000) return chalk.red(text)
+        if (value > 1000 && value <= 2000) return chalk.yellow(text)
+        if (value >= 0 && value <= 1000) return chalk.green(text)
+    }
+    var classic = function (key, text) { return chalk.blue(key +" : "+ text) }
+    console.log(classic("Node.js", nodeVersion()))
+    console.log(classic("Plateforme", platform()))
+    console.log(classic("Release", release()))
+    console.log(chalk.blue("Usage mémoire : ") + color((100*(os.totalmem() - os.freemem())/totalmemory()), ((100*(os.totalmem() - os.freemem())/totalmemory())) + "%"))
+    console.log(classic("Uptime", uptimeFormated()))
+    console.log(classic("Version", version()))
+    console.log("-----------------------")
+    console.log(chalk.hex("#1387de").bold("Bilan CPU process-infos"))
+    console.log("-----------------------")
+    console.log(classic("Modèle CPU", cpu("0").model))
+    console.log(chalk.blue("Vitesse CPU : ") + color2(cpu("0").speed, cpu("0").speed + " MHZ"))
+}
+
+var platform = function () {
     testOs()
     return os.platform()
 }
 
-function release () {
+var release = function () {
     testOs()
     return os.release()
 }
 
-function totalmemory () {
+var totalmemory = function () {
     testOs()
     return os.totalmem()
 }
 
-function freememory () {
+var freememory = function () {
     testOs()
     return os.freemem()
 }
 
-function memoryUsage (option) {
+var memoryUsage = function (option) {
     testOs()
     let memoryUsed = os.totalmem() - os.freemem()
     let memoryTotal = os.totalmem()
@@ -52,17 +91,24 @@ function memoryUsage (option) {
     if (!option.toLowerCase() == "gb") return memoryUsed/1000000000 + "/" + memoryTotal/1000000000 + " GB"
 }
 
-function version () {
+var shortMemoryUsage = function () {
+    testOs()
+    let memoryUsed = os.totalmem() - os.freemem().toString().substr(0, 1) + "." + os.totalmem() - os.freemem().toString().substr(0, 1)
+    let memoryTotal = os.totalmem().toString().substr(0, 1) + "." + os.totalmem().toString().substr(1, 9)
+    return memoryUsed + "/" + memoryTotal + " GB"
+}
+
+var version = function () {
     testOs()
     return os.version()
 }
 
-function uptime () {
+var uptime = function () {
     testOs()
     return os.uptime()
 }
 
-function uptimeFormated () {
+var uptimeFormated = function () {
     testOs()
     if (!moment) console.warn("This command might work badly if you don't install the 'moment' package! To correct this problem, install this package.");
     let hours = moment().subtract(Date.now() - os.uptime(), "milliseconds").format("LTS").toString().split(":")[0]-1
@@ -71,71 +117,72 @@ function uptimeFormated () {
     return hours + "h " + minutes + "m " + seconds + "s "
 }
 
-function uptimeHours () {
+var uptimeHours = function () {
     testOs()
     if (!moment) console.warn("This command might work badly if you don't install the 'moment' package! To correct this problem, install this package.");
     let hours = moment().subtract(Date.now() - os.uptime(), "milliseconds").format("LTS").toString().split(":")[0]-1
     return hours
 }
 
-function uptimeMinutes () {
+var uptimeMinutes = function () {
     testOs()
     if (!moment) console.warn("This command might work badly if you don't install the 'moment' package! To correct this problem, install this package.");
     let minutes = moment().subtract(Date.now() - os.uptime(), "milliseconds").format("LTS").toString().split(":")[1]
     return minutes
 }
 
-function uptimeSeconds () {
+var uptimeSeconds = function () {
     testOs()
     if (!moment) console.warn("This command might work badly if you don't install the 'moment' package! To correct this problem, install this package.");
     let seconds = moment().subtract(Date.now() - os.uptime(), "milliseconds").format("LTS").toString().split(":")[2].substr(0, 2)
     return seconds
 }
 
-function cpus () {
+var cpus = function () {
     testOs()
     return os.cpus()
 }
 
-function cpu (id) {
-    if (!id) throw new SyntaxError("You must specify a CPU ID! Use cpu(0) for the first CPU!")
+var cpu = function (id=0) {
+    if (!id) id = 0
     if (isNaN(id)) throw new SyntaxError("You must specify a valid CPU ID! Use cpu(0) for the first CPU!")
     if (id < 0) throw new RangeError("You must specify a valid CPU ID! Use cpu(0) for the first CPU!")
     testOs()
-    let cpu = os.cpus()[id]
-    if (!cpu) throw new Error("No CPU found at this ID! Try cpu(0)!")
-    return (cpu.model, cpu.speed, cpu.times)
+    let cpu2 = os.cpus()[id]
+    if (!cpu2) throw new Error("No CPU found at this ID! Try cpu(0)!")
+    return ({"model":cpu2.model, "speed":cpu2.speed, "times":cpu2.times})
 }
 
-function discordGuilds (client) {
+var discordGuilds = function (client) {
     testDiscord()
     if (DiscordVersion == 11) return client.guilds.size
     if (DiscordVersion == 12) return client.guilds.cache.size
 }
 
-function discordChannels (client) {
+var discordChannels = function (client) {
     testDiscord()
     if (DiscordVersion == 11) return client.channels.size
     if (DiscordVersion == 12) return client.channels.cache.size
 }
 
-function discordUsers (client) {
+var discordUsers = function (client) {
     testDiscord()
     if (DiscordVersion == 11) return client.users.size
     if (DiscordVersion == 12) return client.users.cache.size
 }
 
-function discordVersion () {
+var discordVersion = function () {
     testDiscord()
-    return DiscordVersion
+    return Discord.version
 }
 
-function nodeVersion () {
+var nodeVersion = function () {
     testDiscord()
     return process.version
 }
 
 module.exports = {
+    bilan: bilan,
     discordGuilds: discordGuilds,
     discordChannels: discordChannels,
     discordUsers: discordUsers,
@@ -146,6 +193,7 @@ module.exports = {
     totalmemory: totalmemory,
     freememory: freememory,
     memoryUsage: memoryUsage,
+    shortMemoryUsage: shortMemoryUsage,
     uptime: uptime,
     uptimeFormated: uptimeFormated,
     uptimeHours: uptimeHours,

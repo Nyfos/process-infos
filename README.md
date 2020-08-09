@@ -51,6 +51,7 @@ console.log(processinfos.uptimeFormated()) // -> .h .m .s
 
 | Méthode                    | Description                                | Retourne   |
 | :------------------------- | :----------------------------------------- | :--------- |
+| `.bilan()`                 | Envoie un bilan dans la console            | Console    |
 | `.discordGuilds(client)`   | Nombre de serveurs du bot                  | Number     |
 | `.discordChannels(client)` | Nombre de salons du bot                    | Number     |
 | `.discordUsers(client)`    | Nombre d'utilisateurs du bot               | Number     |
@@ -70,7 +71,7 @@ console.log(processinfos.uptimeFormated()) // -> .h .m .s
 | `.cpus()`                  | Liste des CPUs                             | Object     |
 | `.cpu(id)`                 | Informations d'un CPU en particulier       | Voir "1    |
 
-"1 : **Renvoie (modele, vitesse, durées)**
+"1 : **Renvoie {model, speed, times}**
 
 ## Arguments
 
